@@ -4,27 +4,41 @@ import copy
 import math
 import numpy as np
 
+"""MARSMAN13
+    < The relationship between Classes in each module(?) >
+    
+    /features
+        Feature --> Simple
+
+    /classifiers
+        Classifier --> Linear --> Binary
+        
+"""
 
 class AdaBoost:
-    def __init__(self):
-        self.debug = 0
-        self.features = []
-        self.classifiers = []
-        self.max_iterations = 5
-        self.target_error = 0.01
+    def __init__(self):             #MARSMAN13
+        self.debug = 0              # == Verbose | 0 : silent, 1 : between silent and loud, 2 : loud for progress of program
+        self.features = []          # stores (class)Simple s.t splits(.extract) (output)'data matrix' by its self.column
+        self.classifiers = []       # stores stumps(weak classifiers) about all features in each step (p.s select best one)
+        self.max_iterations = 5     # == no.classifiers
+        self.target_error = 0.01    # min admitted error
 
         # data
-        self.data = None
-        self.actual = None
+        self.data = None            # X
+        self.actual = None          # y
 
         # training weights
-        self.weights = None
+        self.weights = None         #
 
-        # trained parameters
-        self.selected_classifiers = None
-        self.alphas = None
-
+        # trained parameteources
+        self.selected_classifiers = None    # 
+        self.alphas = None                  # Amount of Say. type : array
+        
     def seed_features(self):
+        """
+         The shape of self.data is entities x features.
+         This method splits features of data matrix (column direction)
+        """
         if 0 == len(self.features):
             self.features = features.Simple.discover_features(self.data)
 
@@ -38,7 +52,7 @@ class AdaBoost:
         classifier.ready_data(self.data, self.actual, self.weights)
 
         if 1 < self.debug:
-            print 'Eval: ', classifier.describe(), ' (precision: ', classifier.precision, '; error: ', classifier.error, ')'
+            print('Eval: ', classifier.describe(), ' (precision: ', classifier.precision, '; error: ', classifier.error, ')')
 
         return classifier.precision, classifier.error
 
@@ -50,7 +64,7 @@ class AdaBoost:
         best_precision = None
         best_error = None
         best_j = None
-        for j in xrange(0, classifier_count):
+        for j in range(0, classifier_count):
             # get precision
             precision, error = self._evaluate_classifier(self.classifiers[j])
 
@@ -73,7 +87,7 @@ class AdaBoost:
 
         # print classifier
         if 0 < self.debug:
-            print 'Added: ', classifier.describe(), ' (alpha = ', alpha, ')'
+            print('Added: ', classifier.describe(), ' (alpha = ', alpha, ')')
 
         # add alpha
         self.alphas.append(alpha)
@@ -90,8 +104,8 @@ class AdaBoost:
         num_actual_1 = np.sum(self.actual[mistakes] == 1)
 
         if 1 < self.debug:
-            print 'Incorrect: ', np.sum(mistakes), '; Correct: ', np.sum(~mistakes)
-            print 'False positives: ', num_actual_0, '; False negatives: ', num_actual_1
+            print('Incorrect: ', np.sum(mistakes), '; Correct: ', np.sum(~mistakes))
+            print('False positives: ', num_actual_0, '; False negatives: ', num_actual_1)
 
         # adjusters
         self.weights[mistakes] *= 0.5 / sum_of_weights
@@ -136,9 +150,9 @@ class AdaBoost:
         self.alphas = []
 
         # iterations
-        for i in xrange(0, self.max_iterations):
+        for i in range(0, self.max_iterations):
             if 1 < self.debug:
-                print "Iteration ", i + 1
+                print("Iteration ", i + 1)
 
             # run iteration
             self._train_iteration()

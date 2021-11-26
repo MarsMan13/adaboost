@@ -13,7 +13,7 @@ class Linear(Classifier):
     def get_sort_func(self):
         return None
 
-    def process_data(self, val):
+    def process_data(self, val):    # allow for some sort of pre-processing
         return val
 
     def get_potential_boundaries(self, processed_data):
@@ -51,7 +51,7 @@ class Linear(Classifier):
                 continue
 
             # advance boundary
-            for j in xrange(last_boundary, boundary):
+            for j in range(last_boundary, boundary):
                 if 0 < lst[j][1]:
                     err += lst[j][2]
                 else:
